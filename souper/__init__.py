@@ -1,1 +1,0 @@
-APP_NAME = 'souper'

@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 
-from souper import APP_NAME
-from souper.lib import LOG_LEVELS
+from souper.base import APP_NAME, LOG_LEVELS
 from souper.lib.disk import base_loc
 
 
@@ -39,20 +38,38 @@ def arguments():
         help=_help('web root output path')
     )
     parser.add_argument(
-        '-i', '--index',
-        default='index.html',
-        help=_help('index file name')
+        '--asset',
+        default='asset',
+        help=_help('asset folder in web root')
     )
     parser.add_argument(
-        '-j', '--js',
-        default='logic.js',
-        help=_help('logic file name')
-    )
-    parser.add_argument(
-        '-s', '--store',
+        '--store',
         default='store.json',
-        help=_help('store file name')
+        help=_help('store file name in web root')
     )
+    parser.add_argument(
+        '--index',
+        default='index.html',
+        help=_help('index file name in web root')
+    )
+    parser.add_argument(
+        '--style',
+        default='style.js',
+        help=_help('style file name in web root')
+    )
+    parser.add_argument(
+        '--jscript',
+        default='logic.js',
+        help=_help('logic file name in web root')
+    )
+
+    parser.add_argument(
+        '--delay',
+        default=10000,
+        type=_positive,
+        help=_help('milliseconds delay between images')
+    )
+
 
     parser.add_argument(
         '-p', '--pages',

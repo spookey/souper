@@ -2,8 +2,7 @@ from logging import Formatter, StreamHandler, getLogger
 from logging.handlers import RotatingFileHandler
 from pprint import pformat
 
-from souper import APP_NAME
-from souper.lib import LOG_LEVELS
+from souper.base import APP_NAME, LOG_LEVELS
 from souper.lib.disk import sure_loc
 
 
