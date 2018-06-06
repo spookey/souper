@@ -3,6 +3,7 @@ from logging import getLogger
 from souper.base import APP_NAME
 from souper.lib.args import arguments
 from souper.lib.note import keep_args, setup_logging
+from souper.load import Load
 from souper.page import Page
 
 LOG = getLogger(__name__)
@@ -18,8 +19,8 @@ def main():
     if not page.user_valid:
         return 1
 
-    # for base, name in page.images():
-    #     print(base, name)
+    load = Load(page, args)
+    # load.download()
 
     LOG.info('%s done', APP_NAME)
     return 0

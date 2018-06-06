@@ -1,6 +1,9 @@
 from logging import getLogger
+from os import fsync
 
 from requests import codes, request
+
+from souper.lib.disk import sure_loc
 
 LOG = getLogger(__name__)
 
@@ -24,3 +27,19 @@ def fetch_text(url):
         return response.text
 
     return None
+
+
+def fetch_file(url, target, chunk_size=1024):
+    location = sure_loc(target, folder=False)
+    response = _raw_request(url)
+    if response.status_code == codes.get('ok'):
+        with open(location, 'wb') as handle:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    handle.write(chunk)
+                    handle.flush()
+                    fsync(handle.fileno())
+            return True
+
+    LOG.error('error downloading file from "%s"', url)
+    return False
