@@ -1,0 +1,27 @@
+body {
+    background-color: #000000;
+    color: #ffffff;
+}
+img {
+    max-height: 100%;
+    max-width: 100%;
+}
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+.show {
+    align-items: center;
+    display: flex;
+    height: 98vh;
+    justify-content: center;
+    width: 98vw;
+}
+.info {
+    bottom: 1vh;
+    left: 1vw;
+    padding: .5vh .5vw;
+    position: absolute;
+    right: 1vw;
+    text-align: right;
+}

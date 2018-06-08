@@ -5,6 +5,7 @@ from souper.lib.args import arguments
 from souper.lib.note import keep_args, setup_logging
 from souper.load import Load
 from souper.page import Page
+from souper.site import Site
 
 LOG = getLogger(__name__)
 
@@ -20,7 +21,8 @@ def main():
         return 1
 
     load = Load(page, args)
-    # load.download()
+    site = Site(load, args)
 
+    site()
     LOG.info('%s done', APP_NAME)
     return 0

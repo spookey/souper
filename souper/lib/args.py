@@ -54,7 +54,7 @@ def arguments():
     )
     parser.add_argument(
         '--style',
-        default='style.js',
+        default='style.css',
         help=_help('style file name in web root')
     )
     parser.add_argument(
@@ -69,7 +69,6 @@ def arguments():
         type=_positive,
         help=_help('milliseconds delay between images')
     )
-
 
     parser.add_argument(
         '-p', '--pages',
