@@ -58,7 +58,7 @@ def arguments():
         help=_help('style file name in web root')
     )
     parser.add_argument(
-        '--jscript',
+        '--logic',
         default='logic.js',
         help=_help('logic file name in web root')
     )
