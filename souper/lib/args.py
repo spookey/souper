@@ -11,7 +11,7 @@ def arguments():
 
     def _positive(num):
         num = int(num)
-        if num > 0:
+        if num >= 0:
             return num
         raise ValueError()
 
