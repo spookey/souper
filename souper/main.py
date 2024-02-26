@@ -14,7 +14,7 @@ def main():
     args = arguments()
     setup_logging(args)
     keep_args(args)
-    LOG.info('%s ready', APP_NAME)
+    LOG.info("%s ready", APP_NAME)
 
     page = Page(args)
     if not page.user_valid:
@@ -24,5 +24,5 @@ def main():
     site = Site(load, args)
 
     site()
-    LOG.info('%s done', APP_NAME)
+    LOG.info("%s done", APP_NAME)
     return 0

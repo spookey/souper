@@ -14,9 +14,7 @@ from souper.lib.pull import fetch_file
 
 
 class Load(object):
-    KEY = namedtuple('Key', ('t', 'f', 'h'))(
-        'time', 'file', 'href'
-    )
+    KEY = namedtuple("Key", ("t", "f", "h"))("time", "file", "href")
 
     def __init__(self, page, args):
         self._log = getLogger(self.__class__.__name__)
@@ -31,10 +29,15 @@ class Load(object):
 
     def _save(self):
         self._log.debug('writing cache to store file "%s"', self._store)
-        content = list(sorted(
-            self.cache,
-            key=lambda el: (el.get(self.KEY.t), el.get(self.KEY.f))
-        ))
+        content = list(
+            sorted(
+                self.cache,
+                key=lambda el: (
+                    el.get(self.KEY.t),
+                    el.get(self.KEY.f),
+                ),
+            )
+        )
         return json_dump(self._store, content=content)
 
     def _exists(self, name):
@@ -48,19 +51,20 @@ class Load(object):
         if self._exists(name):
             self._log.info('removing image "%s" from cache')
             self.cache = [
-                item for item in self.cache
-                if item.get(self.KEY.f) != name
+                item for item in self.cache if item.get(self.KEY.f) != name
             ]
 
     def _attach(self, name, href):
         if not self._exists(name):
             if fetch_file(href, join_loc(self._asset, name)):
                 self._log.info('adding image "%s"', name)
-                self.cache.append({
-                    self.KEY.t: self.now.isoformat(),
-                    self.KEY.f: name,
-                    self.KEY.h: href,
-                })
+                self.cache.append(
+                    {
+                        self.KEY.t: self.now.isoformat(),
+                        self.KEY.f: name,
+                        self.KEY.h: href,
+                    }
+                )
                 self._save()
 
     def cleanup(self):
@@ -76,5 +80,5 @@ class Load(object):
     def download(self):
         self.cleanup()
         for base, name in self.page.images():
-            self._attach(name, '/'.join([base, name]))
+            self._attach(name, "/".join([base, name]))
         self.cleanup()

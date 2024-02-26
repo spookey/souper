@@ -7,10 +7,18 @@ LOG = getLogger(__name__)
 
 
 def join_loc(*locations):
-    return path.realpath(path.expanduser(path.expandvars(path.join(*(
-        (loc.lstrip(path.sep) if num != 0 else loc)
-        for num, loc in enumerate(locations)
-    )))))
+    return path.realpath(
+        path.expanduser(
+            path.expandvars(
+                path.join(
+                    *(
+                        (loc.lstrip(path.sep) if num != 0 else loc)
+                        for num, loc in enumerate(locations)
+                    )
+                )
+            )
+        )
+    )
 
 
 def check_loc(*locations, folder=False):
@@ -57,7 +65,7 @@ def file_load(*locations, fallback):
     if not check_loc(location, folder=False):
         LOG.info('file "%s" does not exist - return fallback', location)
         return fallback
-    with open(location, 'r') as handle:
+    with open(location, "r") as handle:
         LOG.debug('reading from file "%s"', location)
         return handle.read()
     LOG.error('error reading file "%s" - return fallback', location)
@@ -71,13 +79,13 @@ def json_load(*locations, fallback):
             return loads(content)
         except JSONDecodeError as ex:
             LOG.exception(ex)
-    LOG.error('error reading json - return fallback')
+    LOG.error("error reading json - return fallback")
     return fallback
 
 
 def file_dump(*locations, content):
     location = sure_loc(*locations)
-    with open(location, 'w') as handle:
+    with open(location, "w") as handle:
         LOG.debug('writing to file "%s"', location)
         return handle.write(content)
     LOG.error('error writing file "%s"', location)
@@ -85,8 +93,11 @@ def file_dump(*locations, content):
 
 
 def json_dump(*locations, content):
-    return file_dump(*locations, content=dumps(
-        content,
-        indent=2,
-        sort_keys=True,
-    ))
+    return file_dump(
+        *locations,
+        content=dumps(
+            content,
+            indent=2,
+            sort_keys=True,
+        )
+    )
