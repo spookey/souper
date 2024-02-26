@@ -13,9 +13,7 @@ Main entry point is ``./run.py``
 * for a complete list of options see ``./run.py --help``
 
 * to configure logging use
-    * ``-l`` or ``--log`` to set the output folder for the logfiles
     * ``-v`` or ``--verbosity`` to set the log level
-      (a debug logfile is always created)
 * to configure output files use
     * ``-w`` or ``--www`` to set the root folder for generated files
     * ``--asset`` to rename the folder (within the root folder) for images

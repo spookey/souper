@@ -24,12 +24,6 @@ def arguments():
         default="warning",
         help=_help("log level"),
     )
-    parser.add_argument(
-        "-l",
-        "--log",
-        default=base_loc("logs"),
-        help=_help("log files folder"),
-    )
 
     parser.add_argument(
         "-w",
