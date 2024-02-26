@@ -13,7 +13,7 @@ from souper.lib.disk import (
 from souper.lib.pull import fetch_file
 
 
-class Load(object):
+class Load:
     KEY = namedtuple("Key", ("t", "f", "h"))("time", "file", "href")
 
     def __init__(self, page, args):

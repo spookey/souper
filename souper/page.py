@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from souper.lib.pull import fetch_text
 
 
-class Page(object):
+class Page:
     ASSET_RX = r"(http://asset-.\.soupcdn\.com/asset/\d{3,5})/"
     IMAGE_RX = r"(.{4}_.{4})(_.{3,4})?\.(jpeg|jpg|gif|png)"
     SINCE_RX = r"SOUP\.Endless\.next_url.+/(since/\d*)"
@@ -18,9 +18,7 @@ class Page(object):
         self._loop = 0
 
     def _soup(self, since):
-        purl = "http://{user}.soup.io/{since}".format(
-            user=self.username, since=since
-        )
+        purl = f"http://{self.username}.soup.io/{since}"
         text = fetch_text(purl)
         if text:
             return BeautifulSoup(text, "html.parser")

@@ -10,7 +10,7 @@ LOG = getLogger(__name__)
 
 def _raw_request(url):
     LOG.info('sending request to "%s"', url)
-    response = request("get", url)
+    response = request("get", url, timeout=60)
 
     if not response.ok:
         LOG.warning(

@@ -7,7 +7,7 @@ from souper.lib.disk import sure_loc
 
 
 def _log_folder(folder_path, level_name):
-    return sure_loc(folder_path, "{}_{}.log".format(APP_NAME, level_name))
+    return sure_loc(folder_path, f"{APP_NAME}_{level_name}.log")
 
 
 def _attach_handler(root, handler, formatter, level):

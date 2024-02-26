@@ -3,6 +3,8 @@ from json.decoder import JSONDecodeError
 from logging import getLogger
 from os import listdir, makedirs, path, unlink
 
+ENCODING = "utf-8"
+
 LOG = getLogger(__name__)
 
 
@@ -65,7 +67,7 @@ def file_load(*locations, fallback):
     if not check_loc(location, folder=False):
         LOG.info('file "%s" does not exist - return fallback', location)
         return fallback
-    with open(location, "r") as handle:
+    with open(location, "r", encoding=ENCODING) as handle:
         LOG.debug('reading from file "%s"', location)
         return handle.read()
     LOG.error('error reading file "%s" - return fallback', location)
@@ -85,7 +87,7 @@ def json_load(*locations, fallback):
 
 def file_dump(*locations, content):
     location = sure_loc(*locations)
-    with open(location, "w") as handle:
+    with open(location, "w", encoding=ENCODING) as handle:
         LOG.debug('writing to file "%s"', location)
         return handle.write(content)
     LOG.error('error writing file "%s"', location)

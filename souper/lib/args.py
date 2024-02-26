@@ -7,7 +7,7 @@ from souper.lib.disk import base_loc
 def arguments():
 
     def _help(txt):
-        return '{} (default: "%(default)s")'.format(txt)
+        return f"{txt} (default: '%(default)s')"
 
     def _positive(num):
         num = int(num)
