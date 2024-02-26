@@ -1,76 +1,77 @@
-SOUP_DIR	=	souper
-APP_NAME	=	souper
+SRC_DIR			=	souper
 
-CMD_DELETE	:=	rm -vf
-CMD_FIND	:=	find
-CMD_ISORT	:=	isort
-CMD_PYLINT	:=	pylint
-CMD_PYREV	:=	pyreverse
+CMD_SYS_PY		:=	python3
 
-PLOTS		:=	$(patsubst %,%_$(APP_NAME).png,classes packages)
+DIR_VENV		:=	venv
 
+CMD_BLACK		:=	$(DIR_VENV)/bin/black
+CMD_ISORT		:=	$(DIR_VENV)/bin/isort
+CMD_PIP			:=	$(DIR_VENV)/bin/pip
+CMD_PYLINT		:=	$(DIR_VENV)/bin/pylint
+CMD_PYREVERSE	:=	$(DIR_VENV)/bin/pyreverse
+
+SOURCES			:=	\
+					"$(SRC_DIR)" \
+					"run.py" \
 
 .PHONY: help
-.PHONY: clean cleanplot cleanpyc
-.PHONY: lint plot
-.PHONY: sort
-
-
 help:
-	@echo "souper makefile"
-	@echo "\t"	"for development"
-	@echo
-	@echo "clean"		"\t\t"	"cleanup all files"
-	@echo "cleanplot"	"\t"	"clean generated graphics"
-	@echo "cleanpyc"	"\t"	"clean .pyc and __pycache__ files"
-	@echo "lint"		"\t\t"	"run pylint on code"
-	@echo "plot"		"\t\t"	"generate graphics with pyreverse"
-	@echo "sort"		"\t\t"	"sort imports with isort"
+	@echo "+-----------------+"
+	@echo "| souper makefile |"
+	@echo "+-------+---------+-------+"
+	@echo "|       | for development |"
+	@echo "|       +-----------------+"
+	@echo "|                         |"
+	@echo "|> black                  | run black on $(SRC_DIR)"
+	@echo "|> isort                  | run isort on $(SRC_DIR)"
+	@echo "|> pylint                 | run pylint on $(SRC_DIR)"
+	@echo "|> pyreverse              | run pyreverse on $(SRC_DIR)"
+	@echo "|"
+	@echo "|>                        | run isort, black & pylint"
+	@echo "+"
 
 
-clean: cleanplot cleanpyc
+$(DIR_VENV):
+	$(CMD_SYS_PY) -m venv "$(DIR_VENV)"
+	$(CMD_PIP) install -U pip setuptools
 
-cleanplot:
-	@$(CMD_DELETE) $(PLOTS)
-
-cleanpyc:
-	@$(CMD_FIND) "$(SOUP_DIR)" \
-		-name '*.pyc' -delete -print \
-			-o \
-		-name '__pycache__' -delete -print \
-
-
-define _pylint_msg_tpl
-{C} {path}:{line}:{column} - {msg}
-  ↪  {category} {module}.{obj} ({symbol} {msg_id})
-endef
-export _pylint_msg_tpl
-
-lint:
-	@$(CMD_PYLINT) \
-		--disable "C0111" \
-		--disable "RP0401" \
-		--msg-template="$$_pylint_msg_tpl" \
-		--output-format="colorized" \
-			"$(SOUP_DIR)"
+$(CMD_BLACK): $(DIR_VENV)
+	$(CMD_PIP) install -U black
+$(CMD_ISORT): $(DIR_VENV)
+	$(CMD_PIP) install -U isort
+$(CMD_PYLINT) $(CMD_PYREVERSE): $(DIR_VENV)
+	$(CMD_PIP) install -U pylint
 
 
-$(PLOTS): plot
-plot:
-	@$(CMD_PYREV) \
-		--output png \
+.PHONY: black
+black: $(CMD_BLACK)
+	$(CMD_BLACK) --line-length 79 $(SOURCES)
+
+.PHONY: isort
+isort: $(CMD_ISORT)
+	$(CMD_ISORT) --line-length 79 --profile "black" $(SOURCES)
+
+.PHONY: pylint
+pylint: $(CMD_PYLINT)
+	$(CMD_PYLINT) \
+		--disable C0114 \
+		--disable C0115 \
+		--disable C0116 \
+		--output-format colorized \
+		$(SOURCES)
+
+.PHONY: pyreverse
+pyreverse: $(CMD_PYREVERSE)
+	[ ! -d "graph" ] && mkdir -v "graph" || true
+	$(CMD_PYREVERSE) \
 		--all-ancestors \
-		--module-names=y \
-		--project="$(APP_NAME)" \
+		--all-associated \
+		--filter-mode "ALL" \
 		--filter-mode="ALL" \
-			"$(SOUP_DIR)"
+		--module-names "y" \
+		--output "png" \
+		--output-directory "graph" \
+			$(SOURCES)
 
-
-sort:
-	@$(CMD_ISORT) \
-		--combine-star \
-		--force-sort-within-sections \
-		--multi-line 5 \
-		--apply \
-		--recursive \
-			"$(SOUP_DIR)"
+.PHONY: action
+action: isort black pylint

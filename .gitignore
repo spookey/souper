@@ -1,3 +1,5 @@
 *.pyc
-logs
-www
+/graph/
+/logs/
+/venv/
+/www/
