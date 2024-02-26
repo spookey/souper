@@ -1,7 +1,8 @@
 from argparse import ArgumentParser
 
-from souper.base import APP_NAME, LOG_LEVELS
+from souper.base import APP_NAME
 from souper.lib.disk import base_loc
+from souper.lib.note import LOG_LEVEL_DEFAULT, LOG_LEVELS
 
 
 def arguments():
@@ -21,7 +22,7 @@ def arguments():
         "-v",
         "--verbosity",
         choices=LOG_LEVELS.keys(),
-        default="warning",
+        default=LOG_LEVEL_DEFAULT,
         help=_help("log level"),
     )
 

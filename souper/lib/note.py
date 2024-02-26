@@ -1,33 +1,42 @@
-from logging import Formatter, StreamHandler, getLogger
+from logging import (
+    DEBUG,
+    ERROR,
+    INFO,
+    NOTSET,
+    WARNING,
+    Formatter,
+    StreamHandler,
+    getLogger,
+)
 
-from souper.base import LOG_LEVELS
-
-
-def _attach_handler(root, handler, formatter, level):
-    handler.setFormatter(formatter)
-    handler.setLevel(level)
-    root.addHandler(handler)
-
-
-def setup_logging(args):
-    root_log = getLogger()
-    formatter = Formatter(
-        """
+FORMATTER = Formatter(
+    """
 %(levelname)s - %(asctime)s | %(name)s | %(processName)s %(threadName)s
 %(module)s.%(funcName)s [ %(pathname)s:%(lineno)d ]
   %(message)s
     """.lstrip()
-    )
+)
 
-    level_name = args.verbosity.lower()
-    level_dbg = LOG_LEVELS["debug"]
-    level_use = LOG_LEVELS.get(level_name, level_dbg)
+LOG_LEVEL_DEFAULT = "warning"
+LOG_LEVELS = {
+    "d": DEBUG,
+    "debug": DEBUG,
+    "e": ERROR,
+    "error": ERROR,
+    "i": INFO,
+    "info": INFO,
+    "w": WARNING,
+    LOG_LEVEL_DEFAULT: WARNING,
+}
 
-    root_log.setLevel(level_dbg)
 
-    _attach_handler(
-        root_log,
-        StreamHandler(stream=None),
-        formatter,
-        level_use,
-    )
+def setup_logging(level_name):
+    root_log = getLogger()
+    root_log.setLevel(NOTSET)
+
+    handler = StreamHandler(stream=None)
+    level = LOG_LEVELS.get(level_name, WARNING)
+
+    handler.setFormatter(FORMATTER)
+    handler.setLevel(level)
+    root_log.addHandler(handler)
