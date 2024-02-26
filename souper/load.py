@@ -1,5 +1,3 @@
-from collections import namedtuple
-from datetime import datetime, timezone
 from logging import getLogger
 
 from souper.lib.disk import (
@@ -14,11 +12,8 @@ from souper.lib.pull import fetch_file
 
 
 class Load:
-    KEY = namedtuple("Key", ("t", "f", "h"))("time", "file", "href")
-
     def __init__(self, page, args):
         self._log = getLogger(self.__class__.__name__)
-        self.now = datetime.now(timezone.utc)
         self.page = page
 
         www = sure_loc(args.www, folder=True)
@@ -29,48 +24,31 @@ class Load:
 
     def _save(self):
         self._log.debug('writing cache to store file "%s"', self._store)
-        content = list(
-            sorted(
-                self.cache,
-                key=lambda el: (
-                    el.get(self.KEY.t),
-                    el.get(self.KEY.f),
-                ),
-            )
-        )
+        content = list(sorted(self.cache))
         return json_dump(self._store, content=content)
 
     def _exists(self, name):
-        for elem in self.cache:
-            if elem.get(self.KEY.f) == name:
-                return True
+        if name in self.cache:
+            return True
         self._log.debug('image "%s" not present in cache', name)
         return False
 
     def _remove(self, name):
         if self._exists(name):
             self._log.info('removing image "%s" from cache')
-            self.cache = [
-                item for item in self.cache if item.get(self.KEY.f) != name
-            ]
+            self.cache = [item for item in self.cache if item != name]
 
     def _attach(self, name, href):
         if not self._exists(name):
             if fetch_file(href, join_loc(self._asset, name)):
                 self._log.info('adding image "%s"', name)
-                self.cache.append(
-                    {
-                        self.KEY.t: self.now.isoformat(),
-                        self.KEY.f: name,
-                        self.KEY.h: href,
-                    }
-                )
+                self.cache.append(name)
                 self._save()
 
     def cleanup(self):
         self._log.info('cleanup "%s" folder and cache', self._asset)
         physical = list_loc(self._asset)
-        for name in (elem.get(self.KEY.f) for elem in self.cache):
+        for name in self.cache:
             if name not in physical:
                 self._remove(name)
         for name in physical:

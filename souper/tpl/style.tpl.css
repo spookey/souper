@@ -15,10 +15,6 @@ img {
     max-height: 100%;
     max-width: 100%;
 }
-a {
-    color: #ffffff;
-    text-decoration: none;
-}
 .show {
     align-items: center;
     display: flex;

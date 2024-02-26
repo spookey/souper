@@ -11,23 +11,21 @@ window.onload = function() {
     })();
   }
 
-  function photo(elem) {
+  function photo(file) {
     const text = document.getElementById('text');
     const tell = document.getElementById('tell');
 
     const img = document.createElement('img');
-    const href = document.createElement('a');
+    const span = document.createElement('span');
 
-    img.src = '${ASSET}/' + elem.file;
-    href.innerHTML = elem.file;
-    href.title = elem.time;
-    href.href = elem.href;
+    img.src = '${ASSET}/' + file;
+    span.innerText = file;
 
     while (tell.hasChildNodes()) { tell.removeChild(tell.lastChild); }
     while (text.hasChildNodes()) { text.removeChild(text.lastChild); }
 
     tell.appendChild(img);
-    text.appendChild(href);
+    text.appendChild(span);
 
     smooth(tell);
     smooth(text);
