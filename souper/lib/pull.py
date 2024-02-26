@@ -23,14 +23,6 @@ def _raw_request(url):
     return response
 
 
-def fetch_text(url):
-    response = _raw_request(url)
-    if response.status_code == codes.get("ok"):
-        return response.text
-
-    return None
-
-
 def fetch_file(url, target, chunk_size=1024):
     location = sure_loc(target, folder=False)
     response = _raw_request(url)

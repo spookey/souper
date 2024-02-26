@@ -70,17 +70,4 @@ def arguments():
         help=_help("milliseconds delay between images"),
     )
 
-    parser.add_argument(
-        "-p",
-        "--pages",
-        type=_positive,
-        default=0,
-        help=_help("crawl only a number pages [0 is no limit]"),
-    )
-
-    parser.add_argument(
-        "username",
-        help="soup user name",
-    )
-
     return parser.parse_args()

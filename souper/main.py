@@ -16,7 +16,7 @@ def main():
     keep_args(args)
     LOG.info("%s ready", APP_NAME)
 
-    page = Page(args)
+    page = Page()
     if not page.user_valid:
         return 1
 

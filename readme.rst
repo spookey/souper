@@ -26,11 +26,6 @@ Main entry point is ``./run.py``
 * use ``--delay`` to configure the duration (in milliseconds)
   how long an image is displayed
 
-* use ``-p`` or ``--pages`` to stop crawling after some pages
-  (0 - the default - will crawl until you've reached the end)
-
-A username is always required.
-
 running
 -------
 
