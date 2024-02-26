@@ -3,7 +3,12 @@ from datetime import datetime, timezone
 from logging import getLogger
 
 from souper.lib.disk import (
-    join_loc, json_dump, json_load, list_loc, rm_loc, sure_loc
+    join_loc,
+    json_dump,
+    json_load,
+    list_loc,
+    rm_loc,
+    sure_loc,
 )
 from souper.lib.pull import fetch_file
 
