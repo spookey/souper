@@ -1,6 +1,5 @@
 from logging import Formatter, StreamHandler, getLogger
 from logging.handlers import RotatingFileHandler
-from pprint import pformat
 
 from souper.base import APP_NAME, LOG_LEVELS
 from souper.lib.disk import sure_loc
@@ -60,7 +59,3 @@ def setup_logging(args):
             formatter,
             level_dbg,
         )
-
-
-def keep_args(args):
-    getLogger(__name__).debug("arguments:\n%s", pformat(vars(args)))
