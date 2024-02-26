@@ -8,13 +8,11 @@ from souper.lib.disk import (
     rm_loc,
     sure_loc,
 )
-from souper.lib.pull import fetch_file
 
 
 class Load:
-    def __init__(self, page, args):
+    def __init__(self, args):
         self._log = getLogger(self.__class__.__name__)
-        self.page = page
 
         www = sure_loc(args.www, folder=True)
         self._asset = sure_loc(www, args.asset, folder=True)
@@ -38,13 +36,6 @@ class Load:
             self._log.info('removing image "%s" from cache')
             self.cache = [item for item in self.cache if item != name]
 
-    def _attach(self, name, href):
-        if not self._exists(name):
-            if fetch_file(href, join_loc(self._asset, name)):
-                self._log.info('adding image "%s"', name)
-                self.cache.append(name)
-                self._save()
-
     def cleanup(self):
         self._log.info('cleanup "%s" folder and cache', self._asset)
         physical = list_loc(self._asset)
@@ -57,6 +48,4 @@ class Load:
 
     def download(self):
         self.cleanup()
-        for base, name in self.page.images():
-            self._attach(name, "/".join([base, name]))
-        self.cleanup()
+        self._save()
