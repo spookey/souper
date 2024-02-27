@@ -1,5 +1,4 @@
-from json import dumps, loads
-from json.decoder import JSONDecodeError
+from json import dumps
 from logging import getLogger
 from os import makedirs, path
 
@@ -53,17 +52,6 @@ def file_load(*locations, fallback):
         LOG.debug('reading from file "%s"', location)
         return handle.read()
     LOG.error('error reading file "%s" - return fallback', location)
-    return fallback
-
-
-def json_load(*locations, fallback):
-    content = file_load(*locations, fallback=fallback)
-    if content != fallback:
-        try:
-            return loads(content)
-        except JSONDecodeError as ex:
-            LOG.exception(ex)
-    LOG.error("error reading json - return fallback")
     return fallback
 
 
