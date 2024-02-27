@@ -1,7 +1,7 @@
 from json import dumps, loads
 from json.decoder import JSONDecodeError
 from logging import getLogger
-from os import listdir, makedirs, path, unlink
+from os import makedirs, path
 
 ENCODING = "utf-8"
 
@@ -42,24 +42,6 @@ def base_loc(*locations):
     return join_loc(
         path.dirname(path.dirname(path.dirname(__file__))), *locations
     )
-
-
-def list_loc(*locations):
-    location = join_loc(*locations)
-    if not check_loc(location, folder=True):
-        LOG.error('folder "%s" does not exist - return empty list', location)
-        return []
-    return listdir(location)
-
-
-def rm_loc(*locations):
-    location = join_loc(*locations)
-    if not check_loc(location, folder=False):
-        LOG.warning('file "%s" does not exist - won\'t delete', location)
-        return False
-    LOG.info('deleting file "%s" from disk', location)
-    unlink(location)
-    return True
 
 
 def file_load(*locations, fallback):
