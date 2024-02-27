@@ -6,9 +6,9 @@ from souper.lib.disk import base_loc, file_dump, file_load, join_loc, sure_loc
 
 
 class Site:
-    INDEX = base_loc(APP_NAME, "tpl", "index.tpl.html")
-    LOGIC = base_loc(APP_NAME, "tpl", "logic.tpl.js")
-    STYLE = base_loc(APP_NAME, "tpl", "style.tpl.css")
+    INDEX_TPL = base_loc("souper", "tpl", "index.tpl.html")
+    LOGIC_TPL = base_loc("souper", "tpl", "logic.tpl.js")
+    STYLE_TPL = base_loc("souper", "tpl", "style.tpl.css")
 
     def __init__(self, load, args):
         self._log = getLogger(self.__class__.__name__)
@@ -34,13 +34,13 @@ class Site:
         return file_dump(target, content=tpl.substitute(**self._vars))
 
     def style(self):
-        return self._produce(self.STYLE, self._style)
+        return self._produce(self.STYLE_TPL, self._style)
 
     def logic(self):
-        return self._produce(self.LOGIC, self._logic)
+        return self._produce(self.LOGIC_TPL, self._logic)
 
     def index(self):
-        return self._produce(self.INDEX, self._index)
+        return self._produce(self.INDEX_TPL, self._index)
 
     def __call__(self):
         self.style()
