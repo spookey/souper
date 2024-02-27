@@ -29,7 +29,7 @@ class Site:
 
     def _produce(self, source, target):
         self._log.info('generating "%s" from "%s"', target, source)
-        tpl = Template(file_load(source, fallback=""))
+        tpl = Template(file_load(source))
         return file_dump(target, content=tpl.substitute(**self._vars))
 
     def style(self):

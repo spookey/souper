@@ -43,16 +43,16 @@ def base_loc(*locations):
     )
 
 
-def file_load(*locations, fallback):
+def file_load(*locations):
     location = join_loc(*locations)
     if not check_loc(location, folder=False):
-        LOG.info('file "%s" does not exist - return fallback', location)
-        return fallback
+        LOG.warning('file "%s" does not exist', location)
+        return None
     with open(location, "r", encoding=ENCODING) as handle:
         LOG.debug('reading from file "%s"', location)
         return handle.read()
-    LOG.error('error reading file "%s" - return fallback', location)
-    return fallback
+    LOG.error('error reading file "%s"', location)
+    return None
 
 
 def file_dump(*locations, content):
