@@ -1,4 +1,4 @@
-from json import dumps
+from json import dump
 from logging import getLogger
 from os import makedirs, path
 
@@ -65,11 +65,15 @@ def file_dump(*locations, content):
 
 
 def json_dump(*locations, content):
-    return file_dump(
-        *locations,
-        content=dumps(
+    location = sure_loc(*locations)
+    with open(location, "w", encoding=ENCODING) as handle:
+        LOG.debug('writing to json file "%s"', location)
+        dump(
             content,
+            handle,
             indent=2,
             sort_keys=True,
         )
-    )
+        return True
+    LOG.error('error writing json file "%s"', location)
+    return False
