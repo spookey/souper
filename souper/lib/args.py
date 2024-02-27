@@ -33,6 +33,11 @@ def arguments():
         help=_help("web root output path"),
     )
     parser.add_argument(
+        "--title",
+        default=APP_NAME,
+        help=_help("index document title"),
+    )
+    parser.add_argument(
         "--asset",
         default="asset",
         help=_help("asset folder in web root"),

@@ -1,7 +1,6 @@
 from logging import getLogger
 from string import Template
 
-from souper.base import APP_NAME
 from souper.lib.disk import base_loc, file_dump, file_load, join_loc, sure_loc
 
 
@@ -20,12 +19,12 @@ class Site:
         self._style = join_loc(www, args.style)
 
         self._vars = {
-            "APP_NAME": APP_NAME,
             "ASSET": args.asset,
             "DELAY": args.delay,
             "LOGIC": args.logic,
             "STORE": args.store,
             "STYLE": args.style,
+            "TITLE": args.title,
         }
 
     def _produce(self, source, target):

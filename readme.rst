@@ -16,6 +16,7 @@ Main entry point is ``./run.py``
     * ``-v`` or ``--verbosity`` to set the log level
 * to configure output files use
     * ``-w`` or ``--www`` to set the root folder for generated files
+    * ``--title`` to set the page title
     * ``--asset`` to rename the folder (within the root folder) for images
     * ``--store`` to set the filename which tracks the images
     * ``--index`` to rename the index.html
