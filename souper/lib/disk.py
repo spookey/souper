@@ -32,7 +32,7 @@ def sure_loc(*locations, folder=False):
     location = join_loc(*locations)
     loc = location if folder else path.dirname(location)
     if not check_loc(loc, folder=True):
-        LOG.info('creating folder "%s"', loc)
+        LOG.info("creating folder [%s]", loc)
         makedirs(loc)
     return location
 
@@ -46,28 +46,28 @@ def base_loc(*locations):
 def file_load(*locations):
     location = join_loc(*locations)
     if not check_loc(location, folder=False):
-        LOG.warning('file "%s" does not exist', location)
+        LOG.warning("file [%s] does not exist", location)
         return None
     with open(location, "r", encoding=ENCODING) as handle:
-        LOG.debug('reading from file "%s"', location)
+        LOG.debug("reading from file [%s]", location)
         return handle.read()
-    LOG.error('error reading file "%s"', location)
+    LOG.error("error reading file [%s]", location)
     return None
 
 
 def file_dump(*locations, content):
     location = sure_loc(*locations)
     with open(location, "w", encoding=ENCODING) as handle:
-        LOG.debug('writing to file "%s"', location)
+        LOG.debug("writing to file [%s]", location)
         return handle.write(content)
-    LOG.error('error writing file "%s"', location)
+    LOG.error("error writing file [%s]", location)
     return None
 
 
 def json_dump(*locations, content):
     location = sure_loc(*locations)
     with open(location, "w", encoding=ENCODING) as handle:
-        LOG.debug('writing to json file "%s"', location)
+        LOG.debug("writing to json file [%s]", location)
         dump(
             content,
             handle,
@@ -75,5 +75,5 @@ def json_dump(*locations, content):
             sort_keys=True,
         )
         return True
-    LOG.error('error writing json file "%s"', location)
+    LOG.error("error writing json file [%s]", location)
     return False

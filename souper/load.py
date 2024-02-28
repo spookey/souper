@@ -12,7 +12,7 @@ class Load:  # pylint: disable=too-few-public-methods
         self._store = join_loc(www, args.store)
 
     def _save(self, store):
-        self._log.debug('writing cache to store file "%s"', self._store)
+        self._log.debug("writing cache to store file [%s]", self._store)
         content = list(sorted(store))
         return json_dump(self._store, content=content)
 
