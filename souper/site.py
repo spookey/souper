@@ -34,8 +34,10 @@ class Site:
 
     def store(self):
         content = self.load()
-        self._log.info("writing content to store [%s]", STORE)
+        if not content:
+            return False
 
+        self._log.info("writing content to store [%s]", STORE)
         store = join_loc(self.tgt, STORE)
         return json_dump(store, content=sorted(content))
 

@@ -1,6 +1,7 @@
 from json import dump
 from logging import getLogger
-from os import makedirs, path
+from os import makedirs, path, walk
+from shutil import copy
 
 ENCODING = "utf-8"
 
@@ -41,6 +42,30 @@ def base_loc(*locations):
     return join_loc(
         path.dirname(path.dirname(path.dirname(__file__))), *locations
     )
+
+
+def walk_tree(*locations):
+    location = join_loc(*locations)
+    if not check_loc(location, folder=True):
+        LOG.warning("invalid location [%s]", location)
+        return
+    LOG.info("walking location [%s]", location)
+    for directory, _, files in walk(location):
+        for file_name in files:
+            yield (
+                file_name,
+                join_loc(directory, file_name),
+            )
+
+
+def copy_file(source, *locations):
+    if not check_loc(source, folder=False):
+        LOG.error("source does not exist [%s]", source)
+        return False
+    location = join_loc(*locations)
+    LOG.info("copy file [%s] to [%s]", source, location)
+    copy(source, location)
+    return True
 
 
 def file_load(*locations):
