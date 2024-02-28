@@ -1,7 +1,7 @@
 from logging import getLogger
 
 from souper.base import ASSET, EXTENSIONS
-from souper.lib.disk import copy_file, join_loc, sure_loc, walk_tree
+from souper.lib.disk import copy_file, drop_file, join_loc, sure_loc, walk_tree
 
 
 class Load:
@@ -22,7 +22,19 @@ class Load:
 
         return result
 
+    def cleanup(self, store):
+        if not store:
+            return None
+
+        self._log.info("cleaning files in [%s]", ASSET)
+        for name, target in walk_tree(self._asset):
+            if name not in store:
+                if not drop_file(target):
+                    return None
+
+        return store
+
     def __call__(self):
         store = self.collect()
 
-        return store
+        return self.cleanup(store)

@@ -1,6 +1,6 @@
 from json import dump
 from logging import getLogger
-from os import makedirs, path, walk
+from os import makedirs, path, unlink, walk
 from shutil import copy
 
 ENCODING = "utf-8"
@@ -65,6 +65,16 @@ def copy_file(source, *locations):
     location = join_loc(*locations)
     LOG.info("copy file [%s] to [%s]", source, location)
     copy(source, location)
+    return True
+
+
+def drop_file(*locations):
+    location = join_loc(*locations)
+    if not check_loc(location, folder=False):
+        LOG.warning("file [%s] does not exist", location)
+        return False
+    LOG.info("deleting file [%s] from disk", location)
+    unlink(location)
     return True
 
 
