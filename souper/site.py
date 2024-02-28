@@ -20,11 +20,11 @@ class Site:
         self._log = getLogger(self.__class__.__name__)
         self.load = load
 
-        www = sure_loc(args.www, folder=True)
-        self._index = join_loc(www, args.index)
-        self._logic = join_loc(www, args.logic)
-        self._store = join_loc(www, args.store)
-        self._style = join_loc(www, args.style)
+        tgt = sure_loc(args.tgt, folder=True)
+        self._index = join_loc(tgt, args.index)
+        self._logic = join_loc(tgt, args.logic)
+        self._store = join_loc(tgt, args.store)
+        self._style = join_loc(tgt, args.style)
 
         self._vars = {
             "ASSET": args.asset,

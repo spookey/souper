@@ -14,8 +14,7 @@ Main entry point is ``./run.py``
 
 * to configure logging use
     * ``-v`` or ``--verbosity`` to set the log level
-* to configure output files use
-    * ``-w`` or ``--www`` to set the root folder for generated files
+* to configure output
     * ``--title`` to set the page title
     * ``--asset`` to rename the folder (within the root folder) for images
     * ``--store`` to set the filename which tracks the images
@@ -24,6 +23,8 @@ Main entry point is ``./run.py``
     * ``--logic`` to rename the logic.js
 * use ``--delay`` to configure the duration (in milliseconds)
   how long an image is displayed
+* final two required arguments are the source and target folders
+
 
 running
 -------

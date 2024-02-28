@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 
 from souper.base import APP_NAME
-from souper.lib.disk import base_loc
 from souper.lib.note import LOG_LEVEL_DEFAULT, LOG_LEVELS
 
 
@@ -26,12 +25,6 @@ def arguments():
         help=_help("log level"),
     )
 
-    parser.add_argument(
-        "-w",
-        "--www",
-        default=base_loc("www"),
-        help=_help("web root output path"),
-    )
     parser.add_argument(
         "--title",
         default=APP_NAME,
@@ -68,6 +61,15 @@ def arguments():
         default=10000,
         type=_positive,
         help=_help("milliseconds delay between images"),
+    )
+
+    parser.add_argument(
+        "src",
+        help="source folder location",
+    )
+    parser.add_argument(
+        "tgt",
+        help="target folder location",
     )
 
     return parser.parse_args()
