@@ -16,11 +16,6 @@ Main entry point is ``./run.py``
     * ``-v`` or ``--verbosity`` to set the log level
 * to configure output
     * ``--title`` to set the page title
-    * ``--asset`` to rename the folder (within the root folder) for images
-    * ``--store`` to set the filename which tracks the images
-    * ``--index`` to rename the index.html
-    * ``--style`` to rename the style.css
-    * ``--logic`` to rename the logic.js
 * use ``--delay`` to configure the duration (in milliseconds)
   how long an image is displayed
 * final two required arguments are the source and target folders

@@ -31,32 +31,6 @@ def arguments():
         help=_help("index document title"),
     )
     parser.add_argument(
-        "--asset",
-        default="asset",
-        help=_help("asset folder in web root"),
-    )
-    parser.add_argument(
-        "--store",
-        default="store.json",
-        help=_help("store file name in web root"),
-    )
-    parser.add_argument(
-        "--index",
-        default="index.html",
-        help=_help("index file name in web root"),
-    )
-    parser.add_argument(
-        "--style",
-        default="style.css",
-        help=_help("style file name in web root"),
-    )
-    parser.add_argument(
-        "--logic",
-        default="logic.js",
-        help=_help("logic file name in web root"),
-    )
-
-    parser.add_argument(
         "--delay",
         default=10000,
         type=_positive,

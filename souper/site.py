@@ -1,6 +1,7 @@
 from logging import getLogger
 from string import Template
 
+from souper.base import ASSET, INDEX, LOGIC, STORE, STYLE
 from souper.lib.disk import (
     base_loc,
     file_dump,
@@ -20,28 +21,26 @@ class Site:
         self._log = getLogger(self.__class__.__name__)
         self.load = load
 
-        tgt = sure_loc(args.tgt, folder=True)
-        self._index = join_loc(tgt, args.index)
-        self._logic = join_loc(tgt, args.logic)
-        self._store = join_loc(tgt, args.store)
-        self._style = join_loc(tgt, args.style)
+        self.tgt = sure_loc(args.tgt, folder=True)
 
         self._vars = {
-            "ASSET": args.asset,
+            "ASSET": ASSET,
             "DELAY": args.delay,
-            "LOGIC": args.logic,
-            "STORE": args.store,
-            "STYLE": args.style,
+            "LOGIC": LOGIC,
+            "STORE": STORE,
+            "STYLE": STYLE,
             "TITLE": args.title,
         }
 
     def store(self):
         content = self.load()
-        self._log.info("writing content to store file [%s]", self._store)
-        return json_dump(self._store, content=sorted(content))
+        self._log.info("writing content to store [%s]", STORE)
 
-    def _produce(self, source, target):
-        self._log.info("generating [%s] from [%s]", target, source)
+        store = join_loc(self.tgt, STORE)
+        return json_dump(store, content=sorted(content))
+
+    def _produce(self, source, name):
+        self._log.info("generating [%s] from [%s]", name, source)
         source = file_load(source)
         if not source:
             self._log.warning("empty template [%s]", source)
@@ -53,16 +52,17 @@ class Site:
             self._log.warning("template error [%s]", ex)
             return False
 
+        target = join_loc(self.tgt, name)
         return file_dump(target, content=result)
 
     def style(self):
-        return self._produce(self.STYLE_TPL, self._style)
+        return self._produce(self.STYLE_TPL, STYLE)
 
     def logic(self):
-        return self._produce(self.LOGIC_TPL, self._logic)
+        return self._produce(self.LOGIC_TPL, LOGIC)
 
     def index(self):
-        return self._produce(self.INDEX_TPL, self._index)
+        return self._produce(self.INDEX_TPL, INDEX)
 
     def __call__(self):
         self.store()
