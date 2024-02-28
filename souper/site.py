@@ -29,8 +29,18 @@ class Site:
 
     def _produce(self, source, target):
         self._log.info("generating [%s] from [%s]", target, source)
-        tpl = Template(file_load(source))
-        return file_dump(target, content=tpl.substitute(**self._vars))
+        source = file_load(source)
+        if not source:
+            self._log.warning("empty template [%s]", source)
+            return False
+
+        try:
+            result = Template(source).substitute(**self._vars)
+        except (KeyError, ValueError) as ex:
+            self._log.warning("template error [%s]", ex)
+            return False
+
+        return file_dump(target, content=result)
 
     def style(self):
         return self._produce(self.STYLE_TPL, self._style)
