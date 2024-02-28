@@ -1,7 +1,14 @@
 from logging import getLogger
 from string import Template
 
-from souper.lib.disk import base_loc, file_dump, file_load, join_loc, sure_loc
+from souper.lib.disk import (
+    base_loc,
+    file_dump,
+    file_load,
+    join_loc,
+    json_dump,
+    sure_loc,
+)
 
 
 class Site:
@@ -16,6 +23,7 @@ class Site:
         www = sure_loc(args.www, folder=True)
         self._index = join_loc(www, args.index)
         self._logic = join_loc(www, args.logic)
+        self._store = join_loc(www, args.store)
         self._style = join_loc(www, args.style)
 
         self._vars = {
@@ -26,6 +34,11 @@ class Site:
             "STYLE": args.style,
             "TITLE": args.title,
         }
+
+    def store(self):
+        content = self.load()
+        self._log.info("writing content to store file [%s]", self._store)
+        return json_dump(self._store, content=sorted(content))
 
     def _produce(self, source, target):
         self._log.info("generating [%s] from [%s]", target, source)
@@ -52,7 +65,7 @@ class Site:
         return self._produce(self.INDEX_TPL, self._index)
 
     def __call__(self):
+        self.store()
         self.style()
         self.logic()
         self.index()
-        self.load.download()
