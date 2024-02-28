@@ -12,7 +12,7 @@ window.onload = function() {
   }
 
   function photo(file) {
-    const text = document.getElementById('text');
+    const show = document.getElementById('show');
     const tell = document.getElementById('tell');
 
     const img = document.createElement('img');
@@ -21,14 +21,14 @@ window.onload = function() {
     img.src = '${ASSET}/' + file;
     span.innerText = file;
 
+    while (show.hasChildNodes()) { show.removeChild(show.lastChild); }
     while (tell.hasChildNodes()) { tell.removeChild(tell.lastChild); }
-    while (text.hasChildNodes()) { text.removeChild(text.lastChild); }
 
-    tell.appendChild(img);
-    text.appendChild(span);
+    show.appendChild(img);
+    tell.appendChild(span);
 
+    smooth(show);
     smooth(tell);
-    smooth(text);
   }
 
   function fetch(location, callback) {
