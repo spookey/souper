@@ -6,6 +6,7 @@ from souper.base import (
     ERROR_ASSETS,
     ERROR_BASICS,
     EXIT_SUCCESS,
+    FICON,
     INDEX,
     LOGIC,
     STORE,
@@ -13,6 +14,7 @@ from souper.base import (
 )
 from souper.lib.disk import (
     base_loc,
+    copy_file,
     file_dump,
     file_load,
     join_loc,
@@ -22,6 +24,7 @@ from souper.lib.disk import (
 
 
 class Site:
+    FICON_SRC = base_loc("souper", "tpl", "favicon.ico")
     INDEX_TPL = base_loc("souper", "tpl", "index.tpl.html")
     LOGIC_TPL = base_loc("souper", "tpl", "logic.tpl.js")
     STYLE_TPL = base_loc("souper", "tpl", "style.tpl.css")
@@ -35,6 +38,7 @@ class Site:
         self._vars = {
             "ASSET": ASSET,
             "DELAY": args.delay,
+            "FICON": FICON,
             "LOGIC": LOGIC,
             "STORE": STORE,
             "STYLE": STYLE,
@@ -49,6 +53,11 @@ class Site:
         self._log.info("writing content to store [%s]", STORE)
         store = join_loc(self.tgt, STORE)
         return json_dump(store, content=sorted(content))
+
+    def ficon(self):
+        self._log.info("add favicon [%s]", FICON)
+        icon = join_loc(self.tgt, FICON)
+        return copy_file(self.FICON_SRC, icon)
 
     def _produce(self, source, name):
         self._log.info("generating [%s] from [%s]", name, source)
@@ -77,6 +86,8 @@ class Site:
 
     def __call__(self):
         if not self.store():
+            return ERROR_ASSETS
+        if not self.ficon():
             return ERROR_ASSETS
         if not self.style():
             return ERROR_BASICS

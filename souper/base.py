@@ -1,6 +1,7 @@
 APP_NAME = "souper"
 
 ASSET = "asset"
+FICON = "favicon.ico"
 INDEX = "index.html"
 LOGIC = "logic.js"
 STORE = "store.json"
