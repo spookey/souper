@@ -1,7 +1,16 @@
 from logging import getLogger
 from string import Template
 
-from souper.base import ASSET, INDEX, LOGIC, STORE, STYLE
+from souper.base import (
+    ASSET,
+    ERROR_ASSETS,
+    ERROR_BASICS,
+    EXIT_SUCCESS,
+    INDEX,
+    LOGIC,
+    STORE,
+    STYLE,
+)
 from souper.lib.disk import (
     base_loc,
     file_dump,
@@ -67,7 +76,13 @@ class Site:
         return self._produce(self.INDEX_TPL, INDEX)
 
     def __call__(self):
-        self.store()
-        self.style()
-        self.logic()
-        self.index()
+        if not self.store():
+            return ERROR_ASSETS
+        if not self.style():
+            return ERROR_BASICS
+        if not self.logic():
+            return ERROR_BASICS
+        if not self.index():
+            return ERROR_BASICS
+
+        return EXIT_SUCCESS

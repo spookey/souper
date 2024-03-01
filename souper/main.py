@@ -11,5 +11,4 @@ def main():
     load = Load(args)
     site = Site(load, args)
 
-    site()
-    return 0
+    return site()

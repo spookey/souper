@@ -12,3 +12,7 @@ EXTENSIONS = (
     ".jpg",
     ".png",
 )
+
+ERROR_ASSETS = 2
+ERROR_BASICS = 1
+EXIT_SUCCESS = 0
