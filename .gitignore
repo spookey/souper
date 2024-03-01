@@ -1,5 +1,4 @@
 *.pyc
 /graph/
-/logs/
 /venv/
 /www/

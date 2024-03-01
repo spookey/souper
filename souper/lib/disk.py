@@ -1,7 +1,7 @@
-from json import dumps, loads
-from json.decoder import JSONDecodeError
+from json import dump
 from logging import getLogger
-from os import listdir, makedirs, path, unlink
+from os import makedirs, path, unlink, walk
+from shutil import copy
 
 ENCODING = "utf-8"
 
@@ -33,7 +33,7 @@ def sure_loc(*locations, folder=False):
     location = join_loc(*locations)
     loc = location if folder else path.dirname(location)
     if not check_loc(loc, folder=True):
-        LOG.info('creating folder "%s"', loc)
+        LOG.info("creating folder [%s]", loc)
         makedirs(loc)
     return location
 
@@ -44,62 +44,71 @@ def base_loc(*locations):
     )
 
 
-def list_loc(*locations):
+def walk_tree(*locations):
     location = join_loc(*locations)
     if not check_loc(location, folder=True):
-        LOG.error('folder "%s" does not exist - return empty list', location)
-        return []
-    return listdir(location)
+        LOG.warning("invalid location [%s]", location)
+        return
+    LOG.info("walking location [%s]", location)
+    for directory, _, files in walk(location):
+        for file_name in files:
+            yield (
+                file_name,
+                join_loc(directory, file_name),
+            )
 
 
-def rm_loc(*locations):
+def copy_file(source, *locations):
+    if not check_loc(source, folder=False):
+        LOG.error("source does not exist [%s]", source)
+        return False
+    location = join_loc(*locations)
+    LOG.info("copy file [%s] to [%s]", source, location)
+    copy(source, location)
+    return True
+
+
+def drop_file(*locations):
     location = join_loc(*locations)
     if not check_loc(location, folder=False):
-        LOG.warning('file "%s" does not exist - won\'t delete', location)
+        LOG.warning("file [%s] does not exist", location)
         return False
-    LOG.info('deleting file "%s" from disk', location)
+    LOG.info("deleting file [%s] from disk", location)
     unlink(location)
     return True
 
 
-def file_load(*locations, fallback):
+def file_load(*locations):
     location = join_loc(*locations)
     if not check_loc(location, folder=False):
-        LOG.info('file "%s" does not exist - return fallback', location)
-        return fallback
+        LOG.warning("file [%s] does not exist", location)
+        return None
     with open(location, "r", encoding=ENCODING) as handle:
-        LOG.debug('reading from file "%s"', location)
+        LOG.debug("reading from file [%s]", location)
         return handle.read()
-    LOG.error('error reading file "%s" - return fallback', location)
-    return fallback
-
-
-def json_load(*locations, fallback):
-    content = file_load(*locations, fallback=fallback)
-    if content != fallback:
-        try:
-            return loads(content)
-        except JSONDecodeError as ex:
-            LOG.exception(ex)
-    LOG.error("error reading json - return fallback")
-    return fallback
+    LOG.error("error reading file [%s]", location)
+    return None
 
 
 def file_dump(*locations, content):
     location = sure_loc(*locations)
     with open(location, "w", encoding=ENCODING) as handle:
-        LOG.debug('writing to file "%s"', location)
+        LOG.debug("writing to file [%s]", location)
         return handle.write(content)
-    LOG.error('error writing file "%s"', location)
+    LOG.error("error writing file [%s]", location)
     return None
 
 
 def json_dump(*locations, content):
-    return file_dump(
-        *locations,
-        content=dumps(
+    location = sure_loc(*locations)
+    with open(location, "w", encoding=ENCODING) as handle:
+        LOG.debug("writing to json file [%s]", location)
+        dump(
             content,
+            handle,
             indent=2,
             sort_keys=True,
         )
-    )
+        return True
+    LOG.error("error writing json file [%s]", location)
+    return False

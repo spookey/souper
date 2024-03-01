@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
-from souper.base import APP_NAME, LOG_LEVELS
-from souper.lib.disk import base_loc
+from souper.base import APP_NAME
+from souper.lib.note import LOG_LEVEL_DEFAULT, LOG_LEVELS
 
 
 def arguments():
@@ -21,48 +21,15 @@ def arguments():
         "-v",
         "--verbosity",
         choices=LOG_LEVELS.keys(),
-        default="warning",
+        default=LOG_LEVEL_DEFAULT,
         help=_help("log level"),
     )
-    parser.add_argument(
-        "-l",
-        "--log",
-        default=base_loc("logs"),
-        help=_help("log files folder"),
-    )
 
     parser.add_argument(
-        "-w",
-        "--www",
-        default=base_loc("www"),
-        help=_help("web root output path"),
+        "--title",
+        default=APP_NAME,
+        help=_help("index document title"),
     )
-    parser.add_argument(
-        "--asset",
-        default="asset",
-        help=_help("asset folder in web root"),
-    )
-    parser.add_argument(
-        "--store",
-        default="store.json",
-        help=_help("store file name in web root"),
-    )
-    parser.add_argument(
-        "--index",
-        default="index.html",
-        help=_help("index file name in web root"),
-    )
-    parser.add_argument(
-        "--style",
-        default="style.css",
-        help=_help("style file name in web root"),
-    )
-    parser.add_argument(
-        "--logic",
-        default="logic.js",
-        help=_help("logic file name in web root"),
-    )
-
     parser.add_argument(
         "--delay",
         default=10000,
@@ -71,16 +38,12 @@ def arguments():
     )
 
     parser.add_argument(
-        "-p",
-        "--pages",
-        type=_positive,
-        default=0,
-        help=_help("crawl only a number pages [0 is no limit]"),
+        "src",
+        help="source folder location",
     )
-
     parser.add_argument(
-        "username",
-        help="soup user name",
+        "tgt",
+        help="target folder location",
     )
 
     return parser.parse_args()

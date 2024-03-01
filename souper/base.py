@@ -1,11 +1,19 @@
-from logging import DEBUG, ERROR, INFO, WARNING
-
 APP_NAME = "souper"
 
-LOG_LEVELS = {
-    "debug": DEBUG,
-    "error": ERROR,
-    "info": INFO,
-    "warn": WARNING,
-    "warning": WARNING,
-}
+ASSET = "asset"
+FICON = "favicon.ico"
+INDEX = "index.html"
+LOGIC = "logic.js"
+STORE = "store.json"
+STYLE = "style.css"
+
+EXTENSIONS = (
+    ".gif",
+    ".jpeg",
+    ".jpg",
+    ".png",
+)
+
+ERROR_ASSETS = 2
+ERROR_BASICS = 1
+EXIT_SUCCESS = 0

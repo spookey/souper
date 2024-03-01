@@ -1,66 +1,42 @@
-from logging import Formatter, StreamHandler, getLogger
-from logging.handlers import RotatingFileHandler
-from pprint import pformat
+from logging import (
+    DEBUG,
+    ERROR,
+    INFO,
+    NOTSET,
+    WARNING,
+    Formatter,
+    StreamHandler,
+    getLogger,
+)
 
-from souper.base import APP_NAME, LOG_LEVELS
-from souper.lib.disk import sure_loc
-
-
-def _log_folder(folder_path, level_name):
-    return sure_loc(folder_path, f"{APP_NAME}_{level_name}.log")
-
-
-def _attach_handler(root, handler, formatter, level):
-    handler.setFormatter(formatter)
-    handler.setLevel(level)
-    root.addHandler(handler)
-
-
-def setup_logging(args):
-    root_log = getLogger()
-    formatter = Formatter(
-        """
+FORMATTER = Formatter(
+    """
 %(levelname)s - %(asctime)s | %(name)s | %(processName)s %(threadName)s
 %(module)s.%(funcName)s [ %(pathname)s:%(lineno)d ]
   %(message)s
     """.lstrip()
-    )
+)
 
-    level_name = args.verbosity.lower()
-    level_dbg = LOG_LEVELS["debug"]
-    level_use = LOG_LEVELS.get(level_name, level_dbg)
-    log_size = 10 * (1024 * 1024)
-
-    root_log.setLevel(level_dbg)
-
-    _attach_handler(
-        root_log,
-        StreamHandler(stream=None),
-        formatter,
-        level_use,
-    )
-    _attach_handler(
-        root_log,
-        RotatingFileHandler(
-            _log_folder(args.log, level_name),
-            maxBytes=log_size,
-            backupCount=9,
-        ),
-        formatter,
-        level_use,
-    )
-    if level_use != level_dbg:
-        _attach_handler(
-            root_log,
-            RotatingFileHandler(
-                _log_folder(args.log, "debug"),
-                maxBytes=log_size,
-                backupCount=4,
-            ),
-            formatter,
-            level_dbg,
-        )
+LOG_LEVEL_DEFAULT = "warning"
+LOG_LEVELS = {
+    "d": DEBUG,
+    "debug": DEBUG,
+    "e": ERROR,
+    "error": ERROR,
+    "i": INFO,
+    "info": INFO,
+    "w": WARNING,
+    LOG_LEVEL_DEFAULT: WARNING,
+}
 
 
-def keep_args(args):
-    getLogger(__name__).debug("arguments:\n%s", pformat(vars(args)))
+def setup_logging(level_name):
+    root_log = getLogger()
+    root_log.setLevel(NOTSET)
+
+    handler = StreamHandler(stream=None)
+    level = LOG_LEVELS.get(level_name, WARNING)
+
+    handler.setFormatter(FORMATTER)
+    handler.setLevel(level)
+    root_log.addHandler(handler)
