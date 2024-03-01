@@ -1,57 +1,44 @@
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', () => {
+  const SHOW = document.getElementById('show');
+  const TELL = document.getElementById('tell');
+  const DELAY = parseInt('${DELAY}');
 
-  function smooth(elem) {
-    elem.style.opacity = 0.0;
-    (function fade() {
-      let val = parseFloat(elem.style.opacity);
-      if ((val += 0.05) <= 1.0) {
-        elem.style.opacity = val;
+  const smooth = (elem) => {
+    elem.style.setProperty('opacity', 0);
+    (async function fade() {
+      const val = parseFloat(elem.style.opacity);
+      if (val < 1.0) {
+        elem.style.setProperty('opacity', 0.025 + val);
         requestAnimationFrame(fade);
       }
     })();
-  }
+    return elem;
+  };
 
-  function photo(file) {
-    const show = document.getElementById('show');
-    const tell = document.getElementById('tell');
+  const photo = (file) => {
+    const show = document.createElement('img');
+    show.setAttribute('src', `${ASSET}/$${file}`);
 
-    const img = document.createElement('img');
-    const span = document.createElement('span');
+    const tell = document.createElement('span');
+    tell.append(document.createTextNode(file));
 
-    img.src = '${ASSET}/' + file;
-    span.innerText = file;
+    SHOW.replaceChildren(smooth(show));
+    TELL.replaceChildren(smooth(tell));
+  };
 
-    while (show.hasChildNodes()) { show.removeChild(show.lastChild); }
-    while (tell.hasChildNodes()) { tell.removeChild(tell.lastChild); }
+  fetch('${STORE}')
+    .then((res) => res.json())
+    .then((data) => {
+      [...Array(data.length).keys()]
+        .forEach((pos) => setTimeout(
+          () => photo(data[Math.floor(Math.random() * data.length)]),
+          pos * DELAY
+        ));
 
-    show.appendChild(img);
-    tell.appendChild(span);
-
-    smooth(show);
-    smooth(tell);
-  }
-
-  function fetch(location, callback) {
-    const req = new XMLHttpRequest();
-    req.onreadystatechange = function() {
-      if (req.readyState === 4 && req.status === 200) {
-        callback(JSON.parse(req.responseText));
-      }
-    };
-    req.open('GET', location);
-    req.send();
-  }
-
-  fetch('${STORE}', function(data) {
-    const delay = parseInt('${DELAY}');
-    const len = data.length;
-
-    function fire() { photo(data[Math.floor(Math.random() * len)]); }
-
-    let pos = len;
-    while(pos--) { setTimeout(fire, pos * delay); }
-
-    setTimeout(function() { window.location.reload(true); }, len * delay);
-  });
-
-};
+      setTimeout(
+        () => window.location.reload(true),
+        data.length * DELAY
+      );
+    })
+    .catch(console.error);
+});
