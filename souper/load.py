@@ -15,7 +15,9 @@ class Load:
         result = set()
         self._log.info("collecting files from [%s]", self.src)
         for name, source in walk_tree(self.src):
-            if any(name.lower().endswith(ext) for ext in EXTENSIONS):
+            if not name.startswith(".") and any(
+                name.lower().endswith(ext) for ext in EXTENSIONS
+            ):
                 if not copy_file(source, self._asset, name):
                     return None
                 result.add(name)
