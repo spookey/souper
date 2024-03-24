@@ -27,7 +27,7 @@ help:
 	@echo "|> pylint                 | run pylint on $(SRC_DIR)"
 	@echo "|> pyreverse              | run pyreverse on $(SRC_DIR)"
 	@echo "|"
-	@echo "|>                        | run isort, black & pylint"
+	@echo "|> action                 | run isort, black & pylint"
 	@echo "+"
 
 
