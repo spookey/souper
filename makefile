@@ -6,6 +6,7 @@ DIR_VENV		:=	venv
 
 CMD_BLACK		:=	$(DIR_VENV)/bin/black
 CMD_ISORT		:=	$(DIR_VENV)/bin/isort
+CMD_MYPY		:=	$(DIR_VENV)/bin/mypy
 CMD_PIP			:=	$(DIR_VENV)/bin/pip
 CMD_PYLINT		:=	$(DIR_VENV)/bin/pylint
 CMD_PYREVERSE	:=	$(DIR_VENV)/bin/pyreverse
@@ -26,10 +27,11 @@ help:
 	@echo "|                         |"
 	@echo "|> black                  | run black on $(SRC_DIR)"
 	@echo "|> isort                  | run isort on $(SRC_DIR)"
+	@echo "|> mypy                   | run mypy on $(SRC_DIR)"
 	@echo "|> pylint                 | run pylint on $(SRC_DIR)"
 	@echo "|> pyreverse              | run pyreverse on $(SRC_DIR)"
 	@echo "|"
-	@echo "|> action                 | run isort, black & pylint"
+	@echo "|> action                 | run isort, black, mypy & pylint"
 	@echo "+"
 
 
@@ -37,11 +39,11 @@ $(DIR_VENV):
 	$(CMD_SYS_PY) -m venv "$(DIR_VENV)"
 	$(CMD_PIP) install -U pip setuptools
 
-$(CMD_BLACK) $(CMD_ISORT) $(CMD_PYLINT): $(DIR_VENV)
+$(CMD_BLACK) $(CMD_ISORT) $(CMD_MYPY) $(CMD_PYLINT): $(DIR_VENV)
 	$(CMD_PIP) install -r "requirements-dev.txt"
 
 .PHONY: requirements-dev
-requirements-dev: $(CMD_BLACK) $(CMD_ISORT) $(CMD_PYLINT)
+requirements-dev: $(CMD_BLACK) $(CMD_ISORT) $(CMD_MYPY) $(CMD_PYLINT)
 
 .PHONY: black
 black: requirements-dev
@@ -50,6 +52,10 @@ black: requirements-dev
 .PHONY: isort
 isort: requirements-dev
 	$(CMD_ISORT) --line-length 79 --profile "black" $(SOURCES)
+
+.PHONY: mypy
+mypy: requirements-dev
+	$(CMD_MYPY) --strict $(SOURCES)
 
 .PHONY: pylint
 pylint: requirements-dev
@@ -74,4 +80,4 @@ pyreverse: requirements-dev
 			$(SOURCES)
 
 .PHONY: action
-action: isort black pylint
+action: isort black mypy pylint
