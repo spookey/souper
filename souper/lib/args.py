@@ -1,18 +1,27 @@
 from argparse import ArgumentParser
+from typing import Final, NamedTuple, cast
 
 from souper.base import APP_NAME
 from souper.lib.note import LOG_LEVEL_DEFAULT, LOG_LEVELS
 
 
-def arguments():
+class Args(NamedTuple):
+    verbosity: str
+    title: str
+    delay: int
+    src: str
+    tgt: str
 
-    def _help(txt):
+
+def arguments() -> Args:
+
+    def _help(txt: str) -> str:
         return f"{txt} (default: '%(default)s')"
 
-    def _positive(num):
-        num = int(num)
-        if num >= 0:
-            return num
+    def _positive(num: str) -> int:
+        val: Final[int] = int(num)
+        if val >= 0:
+            return val
         raise ValueError()
 
     parser = ArgumentParser(APP_NAME, epilog="c[_]")
@@ -46,4 +55,4 @@ def arguments():
         help="target folder location",
     )
 
-    return parser.parse_args()
+    return cast(Args, parser.parse_args())

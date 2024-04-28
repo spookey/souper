@@ -5,11 +5,14 @@ from logging import (
     NOTSET,
     WARNING,
     Formatter,
+    Handler,
+    Logger,
     StreamHandler,
     getLogger,
 )
+from typing import Final, Mapping
 
-FORMATTER = Formatter(
+FORMATTER: Final[Formatter] = Formatter(
     """
 %(levelname)s - %(asctime)s | %(name)s | %(processName)s %(threadName)s
 %(module)s.%(funcName)s [ %(pathname)s:%(lineno)d ]
@@ -17,8 +20,8 @@ FORMATTER = Formatter(
     """.lstrip()
 )
 
-LOG_LEVEL_DEFAULT = "warning"
-LOG_LEVELS = {
+LOG_LEVEL_DEFAULT: Final[str] = "warning"
+LOG_LEVELS: Final[Mapping[str, int]] = {
     "d": DEBUG,
     "debug": DEBUG,
     "e": ERROR,
@@ -30,11 +33,11 @@ LOG_LEVELS = {
 }
 
 
-def setup_logging(level_name):
-    root_log = getLogger()
+def setup_logging(level_name: str) -> None:
+    root_log: Final[Logger] = getLogger()
     root_log.setLevel(NOTSET)
 
-    handler = StreamHandler(stream=None)
+    handler: Final[Handler] = StreamHandler(stream=None)
     level = LOG_LEVELS.get(level_name, WARNING)
 
     handler.setFormatter(FORMATTER)
