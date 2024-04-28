@@ -85,8 +85,11 @@ def file_load(*locations):
         return None
     with open(location, "r", encoding=ENCODING) as handle:
         LOG.debug("reading from file [%s]", location)
-        return handle.read()
-    LOG.error("error reading file [%s]", location)
+        try:
+            return handle.read()
+        except (TypeError, ValueError) as ex:
+            LOG.exception(ex)
+            LOG.error("error reading file [%s]", location)
     return None
 
 
@@ -94,21 +97,28 @@ def file_dump(*locations, content):
     location = sure_loc(*locations)
     with open(location, "w", encoding=ENCODING) as handle:
         LOG.debug("writing to file [%s]", location)
-        return handle.write(content)
-    LOG.error("error writing file [%s]", location)
-    return None
+        try:
+            handle.write(content)
+            return True
+        except (TypeError, ValueError) as ex:
+            LOG.exception(ex)
+            LOG.error("error writing file [%s]", location)
+    return False
 
 
 def json_dump(*locations, content):
     location = sure_loc(*locations)
     with open(location, "w", encoding=ENCODING) as handle:
         LOG.debug("writing to json file [%s]", location)
-        dump(
-            content,
-            handle,
-            indent=2,
-            sort_keys=True,
-        )
-        return True
-    LOG.error("error writing json file [%s]", location)
+        try:
+            dump(
+                content,
+                handle,
+                indent=2,
+                sort_keys=True,
+            )
+            return True
+        except (TypeError, ValueError) as ex:
+            LOG.exception(ex)
+            LOG.error("error writing json file [%s]", location)
     return False
