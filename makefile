@@ -22,6 +22,8 @@ help:
 	@echo "|       | for development |"
 	@echo "|       +-----------------+"
 	@echo "|                         |"
+	@echo "|> requirements-dev       | install development requirements"
+	@echo "|                         |"
 	@echo "|> black                  | run black on $(SRC_DIR)"
 	@echo "|> isort                  | run isort on $(SRC_DIR)"
 	@echo "|> pylint                 | run pylint on $(SRC_DIR)"
@@ -35,24 +37,22 @@ $(DIR_VENV):
 	$(CMD_SYS_PY) -m venv "$(DIR_VENV)"
 	$(CMD_PIP) install -U pip setuptools
 
-$(CMD_BLACK): $(DIR_VENV)
-	$(CMD_PIP) install -U black
-$(CMD_ISORT): $(DIR_VENV)
-	$(CMD_PIP) install -U isort
-$(CMD_PYLINT) $(CMD_PYREVERSE): $(DIR_VENV)
-	$(CMD_PIP) install -U pylint
+$(CMD_BLACK) $(CMD_ISORT) $(CMD_PYLINT): $(DIR_VENV)
+	$(CMD_PIP) install -r "requirements-dev.txt"
 
+.PHONY: requirements-dev
+requirements-dev: $(CMD_BLACK) $(CMD_ISORT) $(CMD_PYLINT)
 
 .PHONY: black
-black: $(CMD_BLACK)
+black: requirements-dev
 	$(CMD_BLACK) --line-length 79 $(SOURCES)
 
 .PHONY: isort
-isort: $(CMD_ISORT)
+isort: requirements-dev
 	$(CMD_ISORT) --line-length 79 --profile "black" $(SOURCES)
 
 .PHONY: pylint
-pylint: $(CMD_PYLINT)
+pylint: requirements-dev
 	$(CMD_PYLINT) \
 		--disable C0114 \
 		--disable C0115 \
@@ -61,7 +61,7 @@ pylint: $(CMD_PYLINT)
 		$(SOURCES)
 
 .PHONY: pyreverse
-pyreverse: $(CMD_PYREVERSE)
+pyreverse: requirements-dev
 	[ ! -d "graph" ] && mkdir -v "graph" || true
 	$(CMD_PYREVERSE) \
 		--all-ancestors \
