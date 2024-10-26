@@ -1,5 +1,6 @@
-from logging import getLogger
+from logging import Logger, getLogger
 from string import Template
+from typing import Collection, Final, Mapping, Optional, Union
 
 from souper.base import (
     ASSET,
@@ -12,6 +13,7 @@ from souper.base import (
     STORE,
     STYLE,
 )
+from souper.lib.args import Args
 from souper.lib.disk import (
     base_loc,
     copy_file,
@@ -21,21 +23,22 @@ from souper.lib.disk import (
     json_dump,
     sure_loc,
 )
+from souper.load import Load
 
 
 class Site:
-    FICON_SRC = base_loc("souper", "tpl", "favicon.ico")
-    INDEX_TPL = base_loc("souper", "tpl", "index.tpl.html")
-    LOGIC_TPL = base_loc("souper", "tpl", "logic.tpl.js")
-    STYLE_TPL = base_loc("souper", "tpl", "style.tpl.css")
+    FICON_SRC: Final[str] = base_loc("souper", "tpl", "favicon.ico")
+    INDEX_TPL: Final[str] = base_loc("souper", "tpl", "index.tpl.html")
+    LOGIC_TPL: Final[str] = base_loc("souper", "tpl", "logic.tpl.js")
+    STYLE_TPL: Final[str] = base_loc("souper", "tpl", "style.tpl.css")
 
-    def __init__(self, load, args):
-        self._log = getLogger(self.__class__.__name__)
-        self.load = load
+    def __init__(self, load: Load, args: Args):
+        self._log: Final[Logger] = getLogger(self.__class__.__name__)
+        self.load: Final[Load] = load
 
-        self.tgt = sure_loc(args.tgt, folder=True)
+        self.tgt: Final[str] = sure_loc(args.tgt, folder=True)
 
-        self._vars = {
+        self._vars: Final[Mapping[str, Union[str, int]]] = {
             "ASSET": ASSET,
             "DELAY": args.delay,
             "FICON": FICON,
@@ -45,46 +48,46 @@ class Site:
             "TITLE": args.title,
         }
 
-    def store(self):
-        content = self.load()
+    def store(self) -> bool:
+        content: Final[Optional[Collection[str]]] = self.load()
         if not content:
             return False
 
         self._log.info("writing content to store [%s]", STORE)
-        store = join_loc(self.tgt, STORE)
+        store: Final[str] = join_loc(self.tgt, STORE)
         return json_dump(store, content=sorted(content))
 
-    def ficon(self):
+    def ficon(self) -> bool:
         self._log.info("add favicon [%s]", FICON)
-        icon = join_loc(self.tgt, FICON)
+        icon: Final[str] = join_loc(self.tgt, FICON)
         return copy_file(self.FICON_SRC, icon)
 
-    def _produce(self, source, name):
+    def _produce(self, source: str, name: str) -> bool:
         self._log.info("generating [%s] from [%s]", name, source)
-        source = file_load(source)
-        if not source:
+        content: Final[Optional[str]] = file_load(source)
+        if not content:
             self._log.warning("empty template [%s]", source)
             return False
 
         try:
-            result = Template(source).substitute(**self._vars)
+            result: Final[str] = Template(content).substitute(**self._vars)
         except (KeyError, ValueError) as ex:
             self._log.warning("template error [%s]", ex)
             return False
 
-        target = join_loc(self.tgt, name)
+        target: Final[str] = join_loc(self.tgt, name)
         return file_dump(target, content=result)
 
-    def style(self):
+    def style(self) -> bool:
         return self._produce(self.STYLE_TPL, STYLE)
 
-    def logic(self):
+    def logic(self) -> bool:
         return self._produce(self.LOGIC_TPL, LOGIC)
 
-    def index(self):
+    def index(self) -> bool:
         return self._produce(self.INDEX_TPL, INDEX)
 
-    def __call__(self):
+    def __call__(self) -> int:
         if not self.store():
             return ERROR_ASSETS
         if not self.ficon():
